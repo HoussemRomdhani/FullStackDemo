@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 
 namespace FullStackDemo.Front.Services
 {
-    public class WeatherForecastService : IWeatherForecastService
+    public class BookService : IBookService
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
-
-        public WeatherForecastService(IConfiguration configuration, HttpClient httpClient)
+        public BookService(IConfiguration configuration, HttpClient httpClient)
         {
             _configuration = configuration;
             _httpClient = httpClient;
         }
-
-        public async Task<IEnumerable<WeatherForecast>> Get()
+        public async Task<IEnumerable<Book>> Get()
         {
-            var backEndUrl = string.Format("{0}/{1}", _configuration["BackEndUrl"], "weatherforecast");
+            var backEndUrl = string.Format("{0}/{1}", _configuration["BackEndUrl"], "api/books");
             var httpResponse = await _httpClient.GetStringAsync(backEndUrl);
-             return JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(httpResponse);
+            return JsonConvert.DeserializeObject<IEnumerable<Book>>(httpResponse);
         }
     }
 }

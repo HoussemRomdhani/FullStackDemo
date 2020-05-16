@@ -12,9 +12,10 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "BackEndUrl": "http://localhost:60357/weatherforecast",
-        "ASPNETCORE_ENVIRONMENT": "Production"
-      }
+        "BackEndUrl": "http://localhost:60357",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "ancmHostingModel": "InProcess"
     },
     "FullStackDemo.Front": {
       "commandName": "Project",

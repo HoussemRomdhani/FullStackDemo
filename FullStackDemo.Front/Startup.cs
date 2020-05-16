@@ -30,6 +30,7 @@ namespace FullStackDemo.Front
         {
             services.AddTransient<HttpClient, HttpClient>();
             services.AddTransient<IWeatherForecastService, WeatherForecastService>();
+            services.AddTransient<IBookService, BookService>();
             services.AddControllersWithViews();
         }
 
