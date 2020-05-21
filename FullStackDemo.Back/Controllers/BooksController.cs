@@ -1,8 +1,9 @@
 ﻿using FullStackDemo.Back.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace FullStackDemo.Back.Controllers
 {
@@ -15,11 +16,11 @@ namespace FullStackDemo.Back.Controllers
             _context = bookStoreContext;
         }
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var books = _context.Books.ToList();
+                var books = await _context.Books.ToListAsync();
                 if (books.Count > 0)
                     return Ok(books);
                 else
@@ -28,16 +29,17 @@ namespace FullStackDemo.Back.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+                throw e;
+               // return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var book = _context.Books.FirstOrDefault(e => e.BookId == id);
+                var book = await _context.Books.FirstOrDefaultAsync(e => e.BookId == id);
                 if (book != null)
                     return Ok(book);
                 else
@@ -51,13 +53,19 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Book book)
+        public async Task<IActionResult> Post([FromBody]Book book)
         {
             if (ModelState.IsValid == false) return BadRequest(ModelState);
             try
             {
-                _context.Books.Add(book);
-                _context.SaveChanges();
+                var bookToCreate = new Book
+                {
+                    Title = book.Title,
+                    Author = book.Author,
+                    Price = book.Price
+                };
+                 _context.Books.Add(bookToCreate);
+                await _context.SaveChangesAsync();
                 return Created("created", book);
             }
             catch (Exception)
@@ -67,14 +75,14 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Book book)
+        public async Task<IActionResult> Put(int id, [FromBody]Book book)
         {
             if (id != book.BookId) return NotFound();
             if (ModelState.IsValid == false) return BadRequest(ModelState);
             try
             {
                 _context.Update(book);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return Ok(book);
 
             }
@@ -85,17 +93,17 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var book = _context.Books.FirstOrDefault(e => e.BookId == id);
+                var book = await _context.Books.FirstOrDefaultAsync(e => e.BookId == id);
                 if (book == null)
                     return NotFound();
                 else
                 {
                     _context.Books.Remove(book);
-                    _context.SaveChanges();
+                   await _context.SaveChangesAsync();
                     return Ok();
                 }
 

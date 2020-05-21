@@ -6,6 +6,10 @@ namespace FullStackDemo.Front.Services
 {
     public interface IBookService
     {
-        Task<IEnumerable<Book>> Get();
+        Task<IEnumerable<Book>> GetAsync();
+        Task<Book> GetAsync(int id);
+        Task CreateAsync(Book book);
+        Task UpdateAsync(int id, Book book);
+        Task RemoveAsync(int id);
     }
 }

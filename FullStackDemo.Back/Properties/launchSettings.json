@@ -18,7 +18,7 @@
       "launchBrowser": true,
       "launchUrl": "api/books",
       "environmentVariables": {
-        "ConnectionString": "server=.;database=BooksStoreDb;integrated security=yes;",
+        "ConnectionString": "Data Source=.;Database=BooksStoreDb;integrated Security=true;",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
