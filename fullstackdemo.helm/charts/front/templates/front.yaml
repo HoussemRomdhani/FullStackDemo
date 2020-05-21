@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullstackdemofront
+  labels:
+    app: fullstackdemofront
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fullstackdemofront
+  template:
+    metadata:
+      labels:
+        app: fullstackdemofront
+    spec:
+      containers:
+      - name: fullstackdemofront
+        image: houssemromdhani/fullstackdemofront:1.4
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: BackEndUrl
+          value: "http://fullstackdemoback:31000"
+        ports:
+        - containerPort: 80
+        resources: {}

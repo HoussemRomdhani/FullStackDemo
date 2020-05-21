@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fullstackdemoback
+  labels:
+    app: fullstackdemoback
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fullstackdemoback
+  template:
+    metadata:
+      labels:
+        app: fullstackdemoback
+    spec:
+      containers:
+      - name: fullstackdemoback
+        image: houssemromdhani/fullstackdemoback:1.4
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ConnectionString
+          value: "Server=mssqlsvc,1400;Database=BooksStoreDb;User Id=sa;Password=Pass@Word1;"
+        ports:
+        - containerPort: 80
+        resources: {}
