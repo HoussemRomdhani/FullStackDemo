@@ -8,10 +8,10 @@ namespace FullStackDemo.Front.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly ILogger<Books1Controller> _logger;
+        private readonly ILogger<BooksController> _logger;
         private readonly IBookService _bookService;
 
-        public BooksController(ILogger<Books1Controller> logger, IBookService bookService)
+        public BooksController(ILogger<BooksController> logger, IBookService bookService)
         {
             _logger = logger;
             _bookService = bookService;
