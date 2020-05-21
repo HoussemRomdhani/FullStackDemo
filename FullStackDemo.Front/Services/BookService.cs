@@ -39,8 +39,14 @@ namespace FullStackDemo.Front.Services
         public async Task<IEnumerable<Book>> GetAsync()
         {
             var backEndUrl = string.Format("{0}/{1}", _configuration["BackEndUrl"], "api/books");
-            var httpResponse = await _httpClient.GetStringAsync(backEndUrl);
-            return JsonConvert.DeserializeObject<IEnumerable<Book>>(httpResponse);
+            var httpResponse = await _httpClient.GetAsync(backEndUrl);
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                var response = httpResponse.Content.ReadAsStringAsync().Result;
+                return JsonConvert.DeserializeObject<IEnumerable<Book>>(response);
+            }
+            else
+                return new List<Book>();
         }
 
         public async Task<Book> GetAsync(int id)

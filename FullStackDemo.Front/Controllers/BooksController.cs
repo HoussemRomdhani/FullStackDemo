@@ -20,7 +20,7 @@ namespace FullStackDemo.Front.Controllers
         // GET: Books
         public async Task<ActionResult> Index()
         {
-            var result = await _bookService.GetAsync().ConfigureAwait(false);
+            var result = await _bookService.GetAsync();
             return View(result);
         }
 
