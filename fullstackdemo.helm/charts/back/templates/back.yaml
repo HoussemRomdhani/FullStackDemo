@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fullstackdemoback
+  name: back
   labels:
-    app: fullstackdemoback
+    app: back
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fullstackdemoback
+      app: back
   template:
     metadata:
       labels:
-        app: fullstackdemoback
+        app: back
     spec:
       containers:
-      - name: fullstackdemoback
+      - name: back
         image: houssemromdhani/fullstackdemoback:1.4
         envFrom:
         - configMapRef:

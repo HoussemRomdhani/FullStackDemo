@@ -4,4 +4,4 @@ metadata:
  name: front-config-map
 data:
  ASPNETCORE_ENVIRONMENT: Development
- BackEndUrl: "http://fullstackdemoback:31000"
+ BackEndUrl: "http://backsvc:31000"

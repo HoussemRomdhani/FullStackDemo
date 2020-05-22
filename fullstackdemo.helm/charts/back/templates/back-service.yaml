@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fullstackdemoback
+  name: backsvc
 spec:
   selector:
-    app: fullstackdemoback
+    app: back
   type: ClusterIP
   ports:
     - name: http
