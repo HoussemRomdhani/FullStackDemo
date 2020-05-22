@@ -23,9 +23,15 @@ spec:
           name: mssql
         env:
         - name: ACCEPT_EULA
-          value: "Y"
+          valueFrom:
+            configMapKeyRef:
+              name: mssql-config-map
+              key: ACCEPT_EULA
         - name: SA_PASSWORD
-          value: "Pass@Word1"
+          valueFrom:
+            secretKeyRef:
+              name: mssql-password
+              key: SA_PASSWORD
         volumeMounts:
         - name: mssql-storage
           mountPath: "/var/opt/mssql/data"

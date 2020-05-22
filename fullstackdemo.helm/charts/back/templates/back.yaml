@@ -17,11 +17,9 @@ spec:
       containers:
       - name: fullstackdemoback
         image: houssemromdhani/fullstackdemoback:1.4
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Development"
-        - name: ConnectionString
-          value: "Server=mssqlsvc,1400;Database=BooksStoreDb;User Id=sa;Password=Pass@Word1;"
+        envFrom:
+        - configMapRef:
+            name: back-config-map
         ports:
         - containerPort: 80
         resources: {}

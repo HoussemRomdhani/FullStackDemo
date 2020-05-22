@@ -17,11 +17,9 @@ spec:
       containers:
       - name: fullstackdemofront
         image: houssemromdhani/fullstackdemofront:1.4
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Development"
-        - name: BackEndUrl
-          value: "http://fullstackdemoback:31000"
+        envFrom:
+        - configMapRef:
+            name: front-config-map
         ports:
         - containerPort: 80
         resources: {}

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+ name: back-config-map
+data:
+ ASPNETCORE_ENVIRONMENT: Development
+ ConnectionString: "Server=mssqlsvc,1400;Database=BooksStoreDb;User Id=sa;Password=Pass@Word1;"
