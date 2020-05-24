@@ -16,9 +16,12 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/books",
+      "launchUrl": "swagger",
       "environmentVariables": {
+        "IdpUrl": "http://localhost:61166/",
+        "ApiName": "bookstoreapi",
         "ConnectionString": "Data Source=.;Database=BooksStoreDb;integrated Security=true;",
+        "ApiSecret": "apisecret",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

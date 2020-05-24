@@ -12,7 +12,11 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "BackEndUrl": "http://localhost:60357",
+        "IdpUrl": "http://localhost:61166/",
+        "ClientSecret": "secret",
+        "BackEndUrl": "http://localhost:60357/",
+        "ClientId": "bookstoreclient",
+        "ApiScope": "bookstoreapi",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "ancmHostingModel": "InProcess"

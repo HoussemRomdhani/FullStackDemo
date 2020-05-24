@@ -1,4 +1,5 @@
 ﻿using FullStackDemo.Back.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,14 +8,17 @@ using System.Threading.Tasks;
 
 namespace FullStackDemo.Back.Controllers
 {
-    [Route("api/[controller]")]
-    public class BooksController : Controller
+    [Route("api/books")]
+    [ApiController]
+    [Authorize]
+    public class BooksController : ControllerBase
     {
         protected readonly BookStoreContext _context;
         public BooksController(BookStoreContext bookStoreContext)
         {
             _context = bookStoreContext;
         }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -53,6 +57,7 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody]Book book)
         {
             if (ModelState.IsValid == false) return BadRequest(ModelState);
@@ -75,6 +80,7 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody]Book book)
         {
             if (id != book.BookId) return NotFound();
@@ -93,6 +99,7 @@ namespace FullStackDemo.Back.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try

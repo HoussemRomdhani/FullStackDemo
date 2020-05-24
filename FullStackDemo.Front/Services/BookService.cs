@@ -1,49 +1,63 @@
 ﻿using FullStackDemo.Front.Models;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace FullStackDemo.Front.Services
 {
     public class BookService : IBookService
     {
-        private readonly IConfiguration _configuration;
-        private readonly HttpClient _httpClient;
-        public BookService(IConfiguration configuration, HttpClient httpClient)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public BookService(IHttpClientFactory httpClientFactory)
         {
-            _configuration = configuration;
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory ??
+             throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
-        public async Task CreateAsync(Book book)
+        public async Task<bool> CreateAsync(Book book)
         {
-            var backEndUrl = string.Format("{0}/{1}", _configuration["BackEndUrl"], "api/books");
-            var bookAsJson = JsonConvert.SerializeObject(book);
-            var stringContent = new StringContent(bookAsJson, Encoding.UTF8, "application/json");
-            await _httpClient.PostAsync(backEndUrl, stringContent)
-                            .ContinueWith((postTask) => postTask.Result.EnsureSuccessStatusCode());
+            var httpClient = _httpClientFactory.CreateClient("APIClient");
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "api/books/");
+            var bookAsJson = JsonSerializer.Serialize(book);
+            request.Content = new StringContent(bookAsJson, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+            return response.IsSuccessStatusCode;
         }
 
-        public async Task UpdateAsync(int id, Book book)
+        public async Task<bool> UpdateAsync(int id, Book book)
         {
-            var backEndUrl = string.Format("{0}/{1}/{2}", _configuration["BackEndUrl"], "api/books", id);
-            var bookAsJson = JsonConvert.SerializeObject(book);
-            var stringContent = new StringContent(bookAsJson, Encoding.UTF8, "application/json");
-            await _httpClient.PutAsync(backEndUrl, stringContent)
-                            .ContinueWith((putTask) => putTask.Result.EnsureSuccessStatusCode());
+            var httpClient = _httpClientFactory.CreateClient("APIClient");
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "api/books/" + id);
+            var bookAsJson = JsonSerializer.Serialize(book);
+            request.Content = new StringContent(bookAsJson, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+            return response.IsSuccessStatusCode;
+
         }
 
         public async Task<IEnumerable<Book>> GetAsync()
         {
-            var backEndUrl = string.Format("{0}/{1}", _configuration["BackEndUrl"], "api/books");
-            var httpResponse = await _httpClient.GetAsync(backEndUrl);
-            if (httpResponse.IsSuccessStatusCode)
+            var httpClient = _httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/books/");
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = httpResponse.Content.ReadAsStringAsync().Result;
-                return JsonConvert.DeserializeObject<IEnumerable<Book>>(response);
+                using (var responseStream = await response.Content.ReadAsStreamAsync())
+                {
+                    return await JsonSerializer.DeserializeAsync<IEnumerable<Book>>(responseStream);
+                }
             }
             else
                 return new List<Book>();
@@ -51,16 +65,32 @@ namespace FullStackDemo.Front.Services
 
         public async Task<Book> GetAsync(int id)
         {
-            var backEndUrl = string.Format("{0}/{1}/{2}", _configuration["BackEndUrl"], "api/books", id);
-            var httpResponse = await _httpClient.GetStringAsync(backEndUrl);
-            return JsonConvert.DeserializeObject<Book>(httpResponse);
+            var httpClient = _httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/books/" + id);
+
+            var response = await httpClient.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using (var responseStream = await response.Content.ReadAsStreamAsync())
+                {
+                    return await JsonSerializer.DeserializeAsync<Book>(responseStream);
+                }
+            }
+            else
+                return null;
         }
 
-        public async Task RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
-            var backEndUrl = string.Format("{0}/{1}/{2}", _configuration["BackEndUrl"], "api/books", id);
-            var httpResponse = await _httpClient.DeleteAsync(backEndUrl)
-                                                .ContinueWith((deleteTask) => deleteTask.Result.EnsureSuccessStatusCode());
+            var httpClient = _httpClientFactory.CreateClient("APIClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, "api/books/" + id);
+
+           var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            return response.IsSuccessStatusCode;
         }
     }
 }

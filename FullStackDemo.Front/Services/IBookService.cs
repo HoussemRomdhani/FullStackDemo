@@ -8,8 +8,8 @@ namespace FullStackDemo.Front.Services
     {
         Task<IEnumerable<Book>> GetAsync();
         Task<Book> GetAsync(int id);
-        Task CreateAsync(Book book);
-        Task UpdateAsync(int id, Book book);
-        Task RemoveAsync(int id);
+        Task<bool> CreateAsync(Book book);
+        Task<bool> UpdateAsync(int id, Book book);
+        Task<bool> RemoveAsync(int id);
     }
 }

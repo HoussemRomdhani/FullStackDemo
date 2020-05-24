@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FullStackDemo.Back
 {
@@ -11,18 +13,30 @@ namespace FullStackDemo.Back
     {
         public static void Main(string[] args)
         {
-            var host = CreateWebHostBuilder(args).Build();
-            using (var serviceScope = host.Services.CreateScope())
+            var host = BuildWebHost(args);
+
+            // migrate & seed the database.  Best practice = in Main, using service scope
+            using (var scope = host.Services.CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetRequiredService<BookStoreContext>();
-                context.Database.Migrate();
+                try
+                {
+                    var context = scope.ServiceProvider.GetService<BookStoreContext>();
+                    // migrate & seed
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+                }
             }
+
+            // run the web app
             host.Run();
         }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                   .UseStartup<Startup>();
-
+                .UseStartup<Startup>()
+                .Build();
     }
 }
